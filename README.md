@@ -1,5 +1,9 @@
 # dexhound
 
+<p align="center">
+  <img src="mascot.jpg" alt="dexhound mascot" width="420">
+</p>
+
 Dump DEX files out of a running Android process — no instrumentation, no injection, no hooks.
 
 ## Why
@@ -44,6 +48,21 @@ Examples:
 ./dexhound com.example.app /data/local/tmp/out
 ./dexhound 12345         /data/local/tmp/out
 ```
+
+### Running against a RASP-protected app
+
+If the target app uses RASP and refuses to launch on a rooted device, the cleanest setup is:
+
+1. Install **Magisk** and enable **Zygisk**.
+2. Open Magisk → **Configure DenyList** → tick the target package.
+3. Launch the app — it sees a "clean" environment and runs normally.
+4. While it's running, dump it from another shell:
+
+   ```
+   su -c '/data/local/tmp/dexhound com.example.app /data/local/tmp/out'
+   ```
+
+Because dexhound never attaches, injects, or loads anything into the target, RASP checks (Frida detection, ptrace probes, hook scans, etc.) don't fire — DenyList alone is enough to get past the boot-time root check.
 
 ## Requirements
 
